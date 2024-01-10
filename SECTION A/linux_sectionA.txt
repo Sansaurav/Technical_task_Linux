@@ -1,0 +1,47 @@
+
+
+
+#!/bin/bash
+
+# Command name
+COMMAND="internsctl"
+
+# Command version
+VERSION="v0.1.0"
+
+# Function to display the version of the command
+function version() {
+    echo "$COMMAND version $VERSION"
+}
+
+# Function to display the help message
+function help() {
+    echo "Usage: $COMMAND [OPTIONS] COMMAND [ARGS]..."
+    echo "Options:"
+    echo "  -v, --version     Show the version and exit"
+    echo "  -h, --help        Show this message and exit"
+    echo "Commands:"
+    echo "  cpu getinfo       Display CPU information"
+    echo "  memory getinfo    Display memory information"
+    echo "  user create       Create a new user"
+    echo "  user list         List all regular users or users with sudo permissions"
+    echo "  file getinfo      Display information about a file"
+}
+
+# Check if any argument is passed
+if [ $# -gt 0 ]; then
+    case $1 in
+        -v|--version)
+        version
+        ;;
+        -h|--help)
+        help
+        ;;
+        *)
+        echo "Invalid option $1"
+        echo "Usage: $COMMAND [-v|--version] [-h|--help]"
+        ;;
+    esac
+else
+    echo "Usage: $COMMAND [-v|--version] [-h|--help]"
+fi

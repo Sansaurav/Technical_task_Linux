@@ -1,0 +1,58 @@
+.TH INTERNSCTL 1 "10 January 2024" "v0.1.0" "User Manuals"
+.SH NAME
+internsctl \- a custom command for server operations
+.SH SYNOPSIS
+.B internsctl
+[\fIOPTION\fR]... \fICOMMAND\fR [\fIARGS\fR]...
+.SH DESCRIPTION
+.PP
+The \fBinternsctl\fR command is a custom command for various server operations including getting CPU and memory information, user management, and file information.
+.SH OPTIONS
+.TP
+\fB-v, --version\fR
+Show the version and exit.
+.TP
+\fB-h, --help\fR
+Show the help message and exit.
+.SH COMMANDS
+.TP
+\fBcpu getinfo\fR
+Display CPU information.
+.TP
+\fBmemory getinfo\fR
+Display memory information.
+.TP
+\fBuser create\fR
+Create a new user.
+.TP
+\fBuser list\fR
+List all regular users or users with sudo permissions.
+.TP
+\fBfile getinfo\fR
+Display information about a file.
+.SH EXAMPLES
+.PP
+To display CPU information:
+.IP
+\fB$ internsctl cpu getinfo\fR
+.PP
+To create a new user:
+.IP
+\fB$ internsctl user create <username>\fR
+.PP
+To display information about a file:
+.IP
+\fB$ internsctl file getinfo <file-name>\fR
+.SH SEE ALSO
+.PP
+The full documentation for
+.B internsctl
+is maintained as a Texinfo manual. If the
+.B info
+and
+.B internsctl
+programs are properly installed at your site, the command
+.IP
+\fBinfo internsctl\fR
+.PP
+should give you access to the complete manual.

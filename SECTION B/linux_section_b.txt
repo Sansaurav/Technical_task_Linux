@@ -1,0 +1,126 @@
+#!/bin/bash
+
+# Command name
+COMMAND="internsctl"
+
+# Command version
+VERSION="v0.1.0"
+
+# Function to display the version of the command
+function version() {
+    echo "$COMMAND version $VERSION"
+}
+
+# Function to get CPU info
+function cpu_getinfo() {
+    lscpu
+}
+
+# Function to get Memory info
+function memory_getinfo() {
+    free -h
+}
+
+# Function to create a new user
+function user_create() {
+    if [ -n "$1" ]; then
+        sudo useradd -m "$1"
+        sudo passwd "$1"
+    else
+        echo "Please provide a username"
+        echo "Usage: $COMMAND user create <username>"
+    fi
+}
+
+# Function to list all regular users
+function user_list() {
+    awk -F: '$3 >= 1000 && $3 <= 60000 {print $1}' /etc/passwd
+}
+
+# Function to list all users with sudo permissions
+function user_list_sudo() {
+    getent group sudo | cut -d: -f4
+}
+
+# Function to get file info
+function file_getinfo() {
+    if [ -n "$1" ]; then
+        if [ -f "$1" ]; then
+            case $2 in
+                --size|-s)
+                stat -c%s "$1"
+                ;;
+                --permissions|-p)
+                stat -c%A "$1"
+                ;;
+                --owner|-o)
+                stat -c%U "$1"
+                ;;
+                --last-modified|-m)
+                stat -c%y "$1"
+                ;;
+                *)
+                stat -c "File: %n\nAccess: %A\nSize(B): %s\nOwner: %U\nModify: %y" "$1"
+                ;;
+            esac
+        else
+            echo "File $1 does not exist"
+        fi
+    else
+        echo "Please provide a file name"
+        echo "Usage: $COMMAND file getinfo [options] <file-name>"
+    fi
+}
+
+# Check if any argument is passed
+if [ $# -gt 0 ]; then
+    case $1 in
+        -v|--version)
+        version
+        ;;
+        cpu)
+        if [ "$2" == "getinfo" ]; then
+            cpu_getinfo
+        else
+            echo "Invalid option $2 for cpu"
+            echo "Usage: $COMMAND cpu getinfo"
+        fi
+        ;;
+        memory)
+        if [ "$2" == "getinfo" ]; then
+            memory_getinfo
+        else
+            echo "Invalid option $2 for memory"
+            echo "Usage: $COMMAND memory getinfo"
+        fi
+        ;;
+        user)
+        if [ "$2" == "create" ]; then
+            user_create "$3"
+        elif [ "$2" == "list" ]; then
+            if [ "$3" == "--sudo-only" ]; then
+                user_list_sudo
+            else
+                user_list
+            fi
+        else
+            echo "Invalid option $2 for user"
+            echo "Usage: $COMMAND user create <username> | list [--sudo-only]"
+        fi
+        ;;
+        file)
+        if [ "$2" == "getinfo" ]; then
+            file_getinfo "$3" "$4"
+        else
+            echo "Invalid option $2 for file"
+            echo "Usage: $COMMAND file getinfo [options] <file-name>"
+        fi
+        ;;
+        *)
+        echo "Invalid option $1"
+        echo "Usage: $COMMAND [-v|--version] [cpu getinfo] [memory getinfo] [user create <username> | list [--sudo-only]] [file getinfo [options] <file-name>]"
+        ;;
+    esac
+else
+    echo "Usage: $COMMAND [-v|--version] [cpu getinfo] [memory getinfo] [user create <username> | list [--sudo-only]] [file getinfo [options] <file-name>]"
+fi
